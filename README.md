@@ -1,59 +1,211 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SaaS Products CRUD — Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST para gestión de productos y categorías construida con Laravel 12.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requisitos previos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP >= 8.2
+- Composer
+- MySQL >= 8.0
+- Laravel 12
+- Laragon o similar (para dominio local `proyect.test`)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Instalación y levantar el entorno
+```bash
+git clone <repositorio>
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan serve
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Variables de entorno
 
-## Laravel Sponsors
+Configura tu archivo `.env`:
+```
+APP_NAME=SaaSProducts
+APP_URL=http://proyect.test
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=saas_products
+DB_USERNAME=root
+DB_PASSWORD=
 
-### Premium Partners
+L5_SWAGGER_GENERATE_ALWAYS=true
+L5_SWAGGER_BASE_PATH=/api
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## URLs base
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Servicio       | URL                                  |
+|----------------|--------------------------------------|
+| API base       | http://proyect.test/api              |
+| Swagger UI     | http://proyect.test/api/documentation|
+| Telescope      | http://proyect.test/telescope        |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Endpoints API
 
-## Security Vulnerabilities
+| Método | Endpoint              | Descripción          |
+|--------|-----------------------|----------------------|
+| GET    | /api/categories       | Listar categorías    |
+| POST   | /api/categories       | Crear categoría      |
+| GET    | /api/categories/{id}  | Ver categoría        |
+| PUT    | /api/categories/{id}  | Actualizar categoría |
+| DELETE | /api/categories/{id}  | Eliminar categoría   |
+| GET    | /api/products         | Listar productos     |
+| POST   | /api/products         | Crear producto       |
+| GET    | /api/products/{id}    | Ver producto         |
+| PUT    | /api/products/{id}    | Actualizar producto  |
+| DELETE | /api/products/{id}    | Eliminar producto    |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Estructura del proyecto
+```
+app/
+├── Exceptions/
+│   └── ApiNotFoundException.php
+├── Http/
+│   ├── Controllers/
+│   │   └── Api/
+│   │       ├── CategoryController.php
+│   │       ├── ProductController.php
+│   │       └── SwaggerController.php
+│   ├── Requests/
+│   │   ├── CategoryRequest.php
+│   │   └── ProductRequest.php
+│   └── Resources/
+│       ├── CategoryResource.php
+│       └── ProductResource.php
+├── Models/
+│   ├── Category.php
+│   └── Product.php
+├── Observers/
+│   ├── CategoryObserver.php
+│   └── ProductObserver.php
+├── Providers/
+│   └── AppServiceProvider.php
+└── Traits/
+    ├── ApiResponseTrait.php
+    └── FindOrFailTrait.php
+database/
+├── migrations/
+│   ├── create_categories_table.php
+│   └── create_products_table.php
+└── seeders/
+    ├── CategorySeeder.php
+    ├── ProductSeeder.php
+    └── DatabaseSeeder.php
+routes/
+└── api.php
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Formato de respuestas JSON
+
+**Éxito:**
+```json
+{
+    "success": true,
+    "message": "Producto creado exitosamente",
+    "data": {
+        "id": 1,
+        "name": "Laptop",
+        "description": "Laptop gamer",
+        "price": "999.99",
+        "stock": 10,
+        "is_active": true
+    }
+}
+```
+
+**Error de validación (422):**
+```json
+{
+    "success": false,
+    "message": "El campo nombre es requerido.",
+    "errors": {
+        "name": [
+            "El campo nombre es requerido."
+        ]
+    }
+}
+```
+
+**No encontrado (404):**
+```json
+{
+    "success": false,
+    "message": "Recurso no encontrado."
+}
+```
+
+---
+
+## Manejo de errores
+
+| Código | Situación               | Comportamiento                          |
+|--------|-------------------------|-----------------------------------------|
+| 422    | Error de validación     | JSON con detalle de errores por campo   |
+| 404    | Recurso no encontrado   | JSON con mensaje descriptivo            |
+| 500    | Error del servidor      | JSON con mensaje genérico               |
+
+---
+
+## Stack técnico
+
+| Tecnología          | Versión  |
+|---------------------|----------|
+| Laravel             | 12       |
+| PHP                 | >= 8.2   |
+| MySQL               | >= 8.0   |
+| L5-Swagger          | latest   |
+| Laravel Telescope   | latest   |
+| Spatie Activity Log | latest   |
+
+---
+
+## Observabilidad — Telescope
+
+Telescope registra en tiempo real todas las peticiones HTTP, queries SQL, excepciones y eventos del modelo.
+
+Accede en: `http://proyect.test/telescope`
+
+---
+
+## Auditoría — Spatie Activity Log
+
+Cada acción de create, update y delete sobre productos y categorías queda registrada automáticamente en la tabla `activity_log` mediante observers.
+
+Consulta el historial directamente en MySQL:
+```sql
+SELECT * FROM activity_log ORDER BY created_at DESC;
+```
+
+---
+
+## Documentación API — Swagger
+
+La documentación interactiva se genera automáticamente desde los atributos PHP en los controllers.
+
+Para regenerar manualmente:
+```bash
+php artisan l5-swagger:generate
+```
+
+Accede en: `http://proyect.test/api/documentation`
