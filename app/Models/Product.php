@@ -9,4 +9,24 @@ class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'stock',
+        'is_active',
+    ];
+
+    // Ocultar campos de fecha en la respuesta JSON
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    // Casteo de campos
+    protected $casts = [
+        'is_active' => 'boolean',
+        'price' => 'decimal:2',
+    ];
 }
